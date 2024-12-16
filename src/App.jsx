@@ -1,15 +1,11 @@
-import React from "react";
-import TextEmotion from "./components/TextEmotion";
-import AudioEmotion from "./components/AudioEmotion";
+import React, { useContext } from "react";
+// import { BrowserRouter, Routes, Route } from "react-router-dom";
+import EmotionPredict from "./pages/EmotionPredictPage";
+
+
 
 const App = () => {
-  return (
-    <div>
-      <h1>Emotion Detection</h1>
-      <TextEmotion />
-      <AudioEmotion />
-    </div>
-  );
+  return <EmotionPredict />;
 };
 
 export default App;
