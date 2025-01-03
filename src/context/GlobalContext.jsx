@@ -21,7 +21,6 @@ export const GlobalProvider = ({ children }) => {
     neutral: 0,
     ps: 0,
     sad: 0,
-    fear: 0,
   };
 
   const handlePredictText = async () => {
@@ -44,7 +43,7 @@ export const GlobalProvider = ({ children }) => {
       setErrorAudio(true);
       return;
     }
-
+    setErrorAudio(false);
     try {
       const response = await predictAudioEmotion(file);
       setResultAudio(response);
