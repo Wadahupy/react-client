@@ -9,43 +9,46 @@ const TextEmotion = () => {
     handlePredictText,
     resultText,
     initialConfidence,
-    error,
+    errorText,
   } = useGlobalContext();
 
   return (
-    <div className="flex flex-col md:flex-row justify-center py-6">
+    <div className="flex flex-col justify-center gap-2 my-2 md:flex-row">
       {/* Input Section */}
-      <div className="flex flex-col w-full md:w-1/2 bg-white rounded-l-2xl text-center border p-6 shadow-md">
-        <h2 className="text-lg mb-2 text-center font-body font-medium text-zinc-700 pb-5">
-          TEXT EMOTION DETECTION
+      <div className="flex flex-col w-full p-6 bg-white border text-start md:w-1/2 rounded-2xl">
+        <h2 className="pb-5 mb-2 text-lg font-medium text-center font-body text-zinc-700">
+          TEXT SCRIPT EMOTION DETECTION
         </h2>
+        <p className="justify-start mb-2 text-sm font-body text-zinc-600">
+          <b>Note:</b> Enter your text script inside the input box
+        </p>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Enter your text here..."
+          placeholder="Enter your text script here..."
           className={`w-full h-32 p-4 border rounded-lg resize-none focus:outline-none focus:ring focus:ring-blue-300 ${
-            error ? "border-red-500" : "border-gray-300"
+            errorText ? "border-red-500" : "border-gray-300"
           }`}
         />
-        {error && (
-          <p className="text-red-500 text-sm mt-2">
-            Please enter some text to predict emotion.
+        {errorText && (
+          <p className="mt-2 text-sm text-red-500">
+            Please enter some text script to predict emotion.
           </p>
         )}
         <button
           onClick={handlePredictText}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+          className="px-4 py-2 mt-4 text-white transition-all duration-300 ease-in-out transform bg-blue-500 rounded-lg delay-1500 hover:scale-105 hover:bg-blue-600 active:bg-blue-700 place-content-end active:scale-100"
         >
           Predict Emotion
         </button>
       </div>
 
       {/* Result Section */}
-      <div className="flex flex-col w-full md:w-1/2 bg-white rounded-r-2xl border p-6 shadow-md">
-        <h3 className="text-lg mb-2 text-center font-body font-medium text-zinc-700">
-          RESULT FOR TEXT EMOTION
+      <div className="flex flex-col w-full p-6 bg-white border md:w-1/2 rounded-2xl">
+        <h3 className="mb-2 text-lg font-medium text-center font-body text-zinc-700">
+          RESULT FOR TEXT SCRIPT EMOTION
         </h3>
-        <p className="mb-4">
+        <p className="mb-2 font-semibold">
           Emotion:{" "}
           <span
             className={`font-medium ${
@@ -58,6 +61,9 @@ const TextEmotion = () => {
               ? resultText.predicted_emotion
               : "Waiting for result..."}
           </span>
+        </p>
+        <p className="mb-2 text-sm italic font-body text-zinc-500">
+          This table displays the confidence level for text script emotion
         </p>
         <EmotionChart
           confidence={resultText?.confidence || initialConfidence}

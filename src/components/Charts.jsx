@@ -10,7 +10,7 @@ const EmotionChart = ({ confidence }) => {
   if (!confidence) {
     return (
       <div className="text-center text-gray-500">
-        No data available. Enter text to predict emotions.
+        No data available. Enter data to predict emotions.
       </div>
     );
   }

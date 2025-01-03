@@ -11,24 +11,24 @@ const EmotionPredictPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-teal-100">
+    <div className="flex flex-wrap items-center justify-center min-h-screen bg-teal-100">
       {!started ? (
-        <div className="flex flex-col justify-center items-center mb-10 text-center">
-          <div className="mx-5 p-10 rounded-md bg-slate-50">
-            <h1 className="text-4xl font-bold mb-2 text-center font-title text-zinc-800">
+        <div className="container flex flex-col items-center justify-center p-5 pb-20 mx-auto text-center ">
+          <div className="w-full h-full p-10 mx-5 border border-slate-300 rounded-2xl bg-slate-50">
+            <h1 className="mb-2 text-2xl font-bold text-center md:text-3xl font-title text-zinc-800">
               Assessing Emotional State in EARIST Students through Machine
               Learning Analysis of Vocal Tone During Pocket Book Reading
             </h1>
-            <h4 className="mt-5 font-body font-medium text-lg">By</h4>
-            <div className="flex flex-row gap-2 justify-center font-body text-zinc-800 underline mx-80 p-1 rounded-md mt-3">
-              <p>Pil, Marck Darrel</p>
-              <p>Abalos, Rochelle</p>
-              <p>Durante, Jude Michael</p>
-              <p>Vinas, Rafael</p>
-            </div>
+            <p className="mb-2">By</p>
+            <p className="text-sm underline md:text-md">Pil, Marck Darrel</p>
+            <p className="text-sm underline md:text-md">Abalos, Rochelle</p>
+            <p className="text-sm underline md:text-md">
+              Durante, Jude Michael
+            </p>
+            <p className="text-sm underline md:text-md">Vinas, Rafael</p>
 
             <button
-              className="transition ease-in-out delay-1500 duration-300 hover:scale-110 p-6 border-double border-4 border-white bg-blue-500 text-white text-lg hover:bg-blue-600 rounded-full mt-10"
+              className="p-6 mt-10 text-lg text-white transition-all duration-300 ease-in-out transform bg-blue-500 border-4 border-white border-double rounded-full delay-1500 hover:scale-110 hover:bg-blue-600 active:bg-blue-700 place-content-end active:scale-100"
               onClick={handleStart}
             >
               <FaPlay />
@@ -36,8 +36,8 @@ const EmotionPredictPage = () => {
           </div>
         </div>
       ) : (
-        <div className="container min-w-dvh min-h-dvh rounded-lg p-4">
-          <h1 className="font-bold font-title text-center text-4xl text-zinc-700">
+        <div className="container p-10 m-2 bg-white border rounded-2xl min-w-dvh min-h-dvh">
+          <h1 className="mb-5 text-4xl font-bold text-center font-title text-zinc-700">
             Emotion Detection
           </h1>
           <div>

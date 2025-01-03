@@ -8,7 +8,8 @@ export const GlobalProvider = ({ children }) => {
   const [text, setText] = useState("");
   const [resultAudio, setResultAudio] = useState(null);
   const [resultText, setResultText] = useState(null);
-  const [error, setError] = useState(false);
+  const [errorText, setErrorText] = useState(false);
+  const [errorAudio, setErrorAudio] = useState(false);
   const [file, setFile] = useState(null);
 
   const initialConfidence = {
@@ -25,22 +26,22 @@ export const GlobalProvider = ({ children }) => {
 
   const handlePredictText = async () => {
     if (!text.trim()) {
-      setError(true);
+      setErrorText(true);
       return;
     }
 
-    setError(false);
+    setErrorText(false);
     try {
       const response = await predictTextEmotion(text);
       setResultText(response);
     } catch (error) {
-      console.error("Error predicting text emotion:", error);
+      console.error("Error predicting text script emotion:", error);
     }
   };
 
   const handlePredictAudio = async () => {
     if (!file) {
-      alert("Please upload an audio file!");
+      setErrorAudio(true);
       return;
     }
 
@@ -66,7 +67,8 @@ export const GlobalProvider = ({ children }) => {
         handlePredictAudio,
         handlePredictText,
         initialConfidence,
-        error,
+        errorText,
+        errorAudio,
         file,
         setFile,
       }}

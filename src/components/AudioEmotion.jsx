@@ -6,8 +6,15 @@ import Record from "../assets/record.svg";
 import Record_play from "../assets/record-play.svg";
 
 const AudioEmotion = () => {
-  const { initialConfidence, file, setFile, handlePredictAudio, resultAudio } =
-    useGlobalContext();
+  const {
+    initialConfidence,
+    file,
+    text,
+    setFile,
+    handlePredictAudio,
+    resultAudio,
+    errorAudio,
+  } = useGlobalContext();
 
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -92,38 +99,50 @@ const AudioEmotion = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-center">
+    <div className="flex flex-col justify-center gap-2 md:flex-row">
       {/* File Input Section */}
-      <div className="flex flex-col w-full md:w-1/2 bg-white rounded-l-2xl text-center border p-6 shadow-md">
-        <h2 className="text-lg mb-2 text-center font-body font-medium text-zinc-700 pb-5">
+      <div className="flex flex-col w-full p-6 bg-white border text-start md:w-1/2 rounded-2xl">
+        <h2 className="pb-5 mb-2 text-lg font-medium text-center font-body text-zinc-700">
           AUDIO EMOTION DETECTION
         </h2>
 
-        <div className="mb-4">
+        {/* TextField Section */}
+        <p className="justify-start mb-2 text-sm font-body text-zinc-600">
+          <b>Note:</b> Press the record button and read the text script inside
+          the input box
+        </p>
+        <textarea
+          value={text}
+          placeholder="Wait for the text script..."
+          className="w-full h-32 p-4 mb-5 border rounded-lg resize-none focus:outline-none focus:ring focus:ring-blue-300"
+          disabled
+        />
+
+        <div className="mb-4 text-center">
           {isRecording ? (
             <button
               onClick={stopRecording}
-              className="bg-red-500 text-white rounded-full ease-in-out delay-1500 duration-300 hover:scale-110 hover:bg-red-600 transition"
+              className="text-white transition duration-300 ease-in-out bg-red-500 rounded-full delay-1500 hover:scale-110 hover:bg-red-600"
             >
               <img src={Record_play} />
             </button>
           ) : (
             <button
               onClick={startRecording}
-              className="bg-slate-200 text-white rounded-full ease-in-out delay-1500 duration-300 hover:scale-110 hover:bg-slate-300 transition"
+              className="text-white transition duration-300 ease-in-out rounded-full delay-1500 hover:scale-110 hover:bg-slate-100"
             >
               <img src={Record} />
             </button>
           )}
           {isRecording && (
-            <p className="text-red-500 font-bold">Recording...</p>
+            <p className="font-bold text-red-500">Recording...</p>
           )}
         </div>
         {audioUrl && (
           <audio
             controls
             src={audioUrl}
-            className="mt-4 border rounded-lg p-2 w-full"
+            className="w-full p-2 mt-4 border rounded-lg"
           >
             Your browser does not support the audio element.
           </audio>
@@ -132,25 +151,30 @@ const AudioEmotion = () => {
           type="file"
           accept="audio/*"
           onChange={(e) => setFile(e.target.files[0])}
-          className="mb-4 p-2 border rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-blue-300 hidden"
+          className="hidden p-2 mb-4 border rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-blue-300"
         />
+        {errorAudio && (
+          <p className="text-sm text-center text-red-500 ">
+            Please record first to predict emotion.
+          </p>
+        )}
         <button
           onClick={() => {
             handlePredictAudio();
             resetRecording();
           }}
-          className="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg hover:bg-blue-600 transition"
+          className="px-4 py-2 mt-4 text-white transition-all duration-300 ease-in-out transform bg-blue-500 rounded-lg delay-1500 hover:scale-105 hover:bg-blue-600 active:bg-blue-700 place-content-end active:scale-100"
         >
           Predict Emotion
         </button>
       </div>
 
       {/* Result Section */}
-      <div className="flex flex-col w-full md:w-1/2 bg-white rounded-r-2xl border p-6 shadow-md">
-        <h3 className="text-lg mb-2 text-center font-body font-medium text-zinc-700">
+      <div className="flex flex-col w-full p-6 bg-white border md:w-1/2 rounded-2xl">
+        <h3 className="mb-2 text-lg font-medium text-center font-body text-zinc-700">
           RESULT FOR AUDIO EMOTION
         </h3>
-        <p className="mb-4">
+        <p className="mb-4 font-semibold">
           Emotion:{" "}
           <span
             className={`font-medium ${
@@ -163,6 +187,9 @@ const AudioEmotion = () => {
               ? resultAudio.predicted_emotion
               : "Waiting for result..."}
           </span>
+        </p>
+        <p className="mb-2 text-sm italic font-body text-zinc-500">
+          This table displays the confidence level for audio emotion
         </p>
         <EmotionChart
           confidence={resultAudio?.confidence || initialConfidence}
