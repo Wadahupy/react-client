@@ -48,7 +48,7 @@ const TextEmotion = () => {
         <h3 className="mb-2 text-lg font-medium text-center font-body text-zinc-700">
           RESULT FOR TEXT SCRIPT EMOTION
         </h3>
-        <p className="mb-2 font-semibold">
+        <p className="mb-2 font-semibold capitalize">
           Emotion:{" "}
           <span
             className={`font-medium ${

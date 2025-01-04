@@ -29,8 +29,19 @@ const AudioEmotion = () => {
     }
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 44100, // High-quality sampling rate
+          channelCount: 1, // Mono channel
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
+      mediaRecorderRef.current = new MediaRecorder(stream, {
+        mimeType: "audio/webm",
+      });
       audioChunksRef.current = [];
 
       mediaRecorderRef.current.ondataavailable = (event) => {
@@ -40,37 +51,39 @@ const AudioEmotion = () => {
       };
 
       mediaRecorderRef.current.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, {
-          type: "audio/webm",
-        });
-        const arrayBuffer = await audioBlob.arrayBuffer();
+        try {
+          const audioBlob = new Blob(audioChunksRef.current, {
+            type: "audio/webm",
+          });
+          const arrayBuffer = await audioBlob.arrayBuffer();
 
-        // Decode the raw audio data into PCM format
-        const audioContext = new (window.AudioContext ||
-          window.webkitAudioContext)();
-        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+          const audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-        // Convert PCM data to WAV format
-        const wav = new WaveFile();
-        const channelData = audioBuffer.getChannelData(0); // Mono channel
-        const pcmData = new Int16Array(channelData.length);
+          // Convert PCM data to WAV format
+          const wav = new WaveFile();
+          const channelData = audioBuffer.getChannelData(0); // Mono channel
+          const pcmData = new Int16Array(channelData.length);
 
-        // Normalize and convert PCM data to 16-bit integer
-        for (let i = 0; i < channelData.length; i++) {
-          pcmData[i] = Math.max(
-            -32768,
-            Math.min(32767, channelData[i] * 32768)
-          );
+          for (let i = 0; i < channelData.length; i++) {
+            pcmData[i] = Math.max(
+              -32768,
+              Math.min(32767, channelData[i] * 32768)
+            );
+          }
+
+          wav.fromScratch(1, audioBuffer.sampleRate, "16", pcmData);
+          const wavBlob = new Blob([wav.toBuffer()], { type: "audio/wav" });
+          const audioFile = new File([wavBlob], "recording.wav", {
+            type: "audio/wav",
+          });
+
+          setAudioUrl(URL.createObjectURL(wavBlob)); // For playback
+          setFile(audioFile); // Simulate file input upload
+        } catch (error) {
+          console.error("Error processing audio data: ", error);
         }
-
-        wav.fromScratch(1, audioBuffer.sampleRate, "16", pcmData);
-        const wavBlob = new Blob([wav.toBuffer()], { type: "audio/wav" });
-        const audioFile = new File([wavBlob], "recording.wav", {
-          type: "audio/wav",
-        });
-
-        setAudioUrl(URL.createObjectURL(wavBlob)); // For playback
-        setFile(audioFile); // Simulate file input upload
       };
 
       mediaRecorderRef.current.start();
@@ -106,7 +119,6 @@ const AudioEmotion = () => {
           AUDIO EMOTION DETECTION
         </h2>
 
-        {/* TextField Section */}
         <p className="justify-start mb-2 text-sm font-body text-zinc-600">
           <b>Note:</b> Press the record button and read the text script inside
           the input box
@@ -124,14 +136,14 @@ const AudioEmotion = () => {
               onClick={stopRecording}
               className="text-white transition duration-300 ease-in-out bg-red-500 rounded-full delay-1500 hover:scale-110 hover:bg-red-600"
             >
-              <img src={Record_play} />
+              <img src={Record_play} alt="Stop Recording" />
             </button>
           ) : (
             <button
               onClick={startRecording}
               className="text-white transition duration-300 ease-in-out rounded-full delay-1500 hover:scale-110 hover:bg-slate-100"
             >
-              <img src={Record} />
+              <img src={Record} alt="Start Recording" />
             </button>
           )}
           {isRecording && (
@@ -154,7 +166,7 @@ const AudioEmotion = () => {
           className="hidden p-2 mb-4 border rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-blue-300"
         />
         {errorAudio && (
-          <p className="text-sm text-center text-red-500 ">
+          <p className="text-sm text-center text-red-500">
             Please record first to predict emotion.
           </p>
         )}
@@ -174,13 +186,11 @@ const AudioEmotion = () => {
         <h3 className="mb-2 text-lg font-medium text-center font-body text-zinc-700">
           RESULT FOR AUDIO EMOTION
         </h3>
-        <p className="mb-4 font-semibold">
+        <p className="mb-4 font-semibold capitalize">
           Emotion:{" "}
           <span
             className={`font-medium ${
-              resultAudio
-                ? "text-green-500" // Green when result is available
-                : "animate-pulse text-gray-500 " // Pulse when waiting
+              resultAudio ? "text-green-500" : "animate-pulse text-gray-500"
             }`}
           >
             {resultAudio
