@@ -10,11 +10,11 @@ const TextEmotion = () => {
     resultText,
     initialConfidence,
     errorText,
+    isLoading,
   } = useGlobalContext();
 
   return (
     <div className="flex flex-col justify-center gap-2 my-2 md:flex-row">
-      {/* Input Section */}
       <div className="flex flex-col w-full p-6 bg-white border text-start md:w-1/2 rounded-2xl">
         <h2 className="pb-5 mb-2 text-lg font-medium text-center font-body text-zinc-700">
           TEXT SCRIPT EMOTION DETECTION
@@ -22,6 +22,7 @@ const TextEmotion = () => {
         <p className="justify-start mb-2 text-sm font-body text-zinc-600">
           <b>Note:</b> Enter your text script inside the input box
         </p>
+        {/* Text Area Section */}
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -37,9 +38,12 @@ const TextEmotion = () => {
         )}
         <button
           onClick={handlePredictText}
-          className="px-4 py-2 mt-4 text-white transition-all duration-300 ease-in-out transform bg-blue-500 rounded-lg delay-1500 hover:scale-105 hover:bg-blue-600 active:bg-blue-700 place-content-end active:scale-100"
+          disabled={isLoading}
+          className={`px-4 py-2 mt-4 text-white transition-all duration-300 ease-in-out transform bg-blue-500 rounded-lg delay-1500 hover:scale-105 hover:bg-blue-600 active:bg-blue-700 place-content-end active:scale-100 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Predict Emotion
+          {isLoading ? "Loading..." : "Predict Emotion"}
         </button>
       </div>
 

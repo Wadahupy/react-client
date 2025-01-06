@@ -11,6 +11,7 @@ export const GlobalProvider = ({ children }) => {
   const [errorText, setErrorText] = useState(false);
   const [errorAudio, setErrorAudio] = useState(false);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialConfidence = {
     angry: 0,
@@ -30,11 +31,14 @@ export const GlobalProvider = ({ children }) => {
     }
 
     setErrorText(false);
+    setIsLoading(true);
     try {
       const response = await predictTextEmotion(text);
       setResultText(response);
     } catch (error) {
       console.error("Error predicting text script emotion:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,11 +48,15 @@ export const GlobalProvider = ({ children }) => {
       return;
     }
     setErrorAudio(false);
+    setIsLoading(true);
     try {
       const response = await predictAudioEmotion(file);
       setResultAudio(response);
+      setIsLoading(true);
     } catch (error) {
       console.error("Error predicting audio emotion:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,6 +77,7 @@ export const GlobalProvider = ({ children }) => {
         errorText,
         errorAudio,
         file,
+        isLoading,
         setFile,
       }}
     >

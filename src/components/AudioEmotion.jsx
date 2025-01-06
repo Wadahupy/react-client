@@ -14,6 +14,7 @@ const AudioEmotion = () => {
     handlePredictAudio,
     resultAudio,
     errorAudio,
+    isLoading,
   } = useGlobalContext();
 
   const [isRecording, setIsRecording] = useState(false);
@@ -113,23 +114,22 @@ const AudioEmotion = () => {
 
   return (
     <div className="flex flex-col justify-center gap-2 md:flex-row">
-      {/* File Input Section */}
       <div className="flex flex-col w-full p-6 bg-white border text-start md:w-1/2 rounded-2xl">
         <h2 className="pb-5 mb-2 text-lg font-medium text-center font-body text-zinc-700">
           AUDIO EMOTION DETECTION
         </h2>
-
         <p className="justify-start mb-2 text-sm font-body text-zinc-600">
           <b>Note:</b> Press the record button and read the text script inside
           the input box
         </p>
+        {/*Text Area Section */}
         <textarea
           value={text}
           placeholder="Wait for the text script..."
           className="w-full h-32 p-4 mb-5 border rounded-lg resize-none focus:outline-none focus:ring focus:ring-blue-300"
           disabled
         />
-
+        {/* Audio Record Section */}
         <div className="mb-4 text-center">
           {isRecording ? (
             <button
@@ -159,6 +159,7 @@ const AudioEmotion = () => {
             Your browser does not support the audio element.
           </audio>
         )}
+        {/* File Input Section */}
         <input
           type="file"
           accept="audio/*"
@@ -175,9 +176,12 @@ const AudioEmotion = () => {
             handlePredictAudio();
             resetRecording();
           }}
-          className="px-4 py-2 mt-4 text-white transition-all duration-300 ease-in-out transform bg-blue-500 rounded-lg delay-1500 hover:scale-105 hover:bg-blue-600 active:bg-blue-700 place-content-end active:scale-100"
+          disabled={isLoading}
+          className={`px-4 py-2 mt-4 text-white transition-all duration-300 ease-in-out transform bg-blue-500 rounded-lg delay-1500 hover:scale-105 hover:bg-blue-600 active:bg-blue-700 place-content-end active:scale-100 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Predict Emotion
+          {isLoading ? "Loading..." : "Predict Emotion"}
         </button>
       </div>
 
